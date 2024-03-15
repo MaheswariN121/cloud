@@ -1,7 +1,8 @@
 #!/bin/bash
 # Set the AWS region
-export AWS_DEFAULT_REGION="ap-south-1"
 
+export AWS_DEFAULT_REGION="ap-south-1"
+EC2_INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
 # Set HOME environment variable to the home directory of ec2-user
 export HOME="/home/ec2-user"
 
@@ -42,7 +43,7 @@ log_message "Running Python script..."
 python aws.py || { log_error "Failed to execute Python script"; exit 1; }
 
 # Check if the "Shutdown" tag is set to "True" to determine whether to shut down the instance
-Shutdown=$(aws ec2 describe-tags --filters "Name=resource-id,Values=${aws_instance.astuto.id}" "Name=key,Values=Shutdown" --query 'Tags[*].Value' --output text 2>/dev/null)
+Shutdown=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$EC2_INSTANCE_ID" "Name=key,Values=Shutdown" --query 'Tags[*].Value' --output text 2>/dev/null)
 
 # Print the Shutdown tag value
 log_message "Shutdown tag value: $Shutdown"
@@ -57,14 +58,14 @@ if [ "$Shutdown" == "True" ]; then
     log_message "The instance is set to shut down."
 
     # Check if the IAM user or role has permissions to stop EC2 instances
-    if ! aws ec2 describe-instances --instance-ids ${aws_instance.astuto.id} >/dev/null 2>&1; then
+    if ! aws ec2 describe-instances --instance-ids $EC2_INSTANCE_ID >/dev/null 2>&1; then
         log_error "Permission denied: Unable to describe EC2 instance"
         exit 1
     fi
 
     # Shut down the instance
     log_message "Shutting down the instance..."
-    if aws ec2 stop-instances --instance-ids ${aws_instance.astuto.id}; then
+    if aws ec2 stop-instances --instance-ids $EC2_INSTANCE_ID; then
         log_message "Instance shutdown request successful."
     else
         log_error "Failed to shut down the instance."
