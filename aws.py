@@ -21,9 +21,9 @@ df = pd.read_parquet(parquet_data)
 csv_data = df.to_csv(index=False)
 
 # Email configuration
-sender_email = "your_sender_email@gmail.com"
-sender_password = "your_sender_email_password"
-receiver_email = "your_receiver_email@gmail.com"
+sender_email = "maheswari.n1598@gmail.com"
+sender_password = "erfo qydj aran ubet"
+receiver_email = "maheshe2213.cats@gmail.com"
 
 # Create a multipart message and set headers
 msg = MIMEMultipart()
