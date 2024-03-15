@@ -43,6 +43,7 @@ log_message "The active directory is: $current_directory"
 log_message "Running Python script..."
 python aws.py || { log_error "Failed to execute Python script"; exit 1; }
 EC2_INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
+log_message $EC2_INSTANCE_ID
 # Check if the "Shutdown" tag is set to "True" to determine whether to shut down the instance
 Shutdown=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$EC2_INSTANCE_ID" "Name=key,Values=Shutdown" --query 'Tags[*].Value' --output text 2>/dev/null)
 
