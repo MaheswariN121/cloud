@@ -2,7 +2,7 @@
 # Set the AWS region
 
 export AWS_DEFAULT_REGION="ap-south-1"
-EC2_INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
+
 # Set HOME environment variable to the home directory of ec2-user
 export HOME="/home/ec2-user"
 
@@ -31,6 +31,7 @@ fi
 # Change to the 'project' directory
 cd project || { log_error "Unable to change directory to 'project'"; exit 1; }
 
+
 # Activate virtual environment
 source test_env/bin/activate || { log_error "Unable to activate virtual environment"; exit 1; }
 
@@ -41,7 +42,7 @@ log_message "The active directory is: $current_directory"
 # Run your Python script
 log_message "Running Python script..."
 python aws.py || { log_error "Failed to execute Python script"; exit 1; }
-
+EC2_INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
 # Check if the "Shutdown" tag is set to "True" to determine whether to shut down the instance
 Shutdown=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$EC2_INSTANCE_ID" "Name=key,Values=Shutdown" --query 'Tags[*].Value' --output text 2>/dev/null)
 
