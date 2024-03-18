@@ -22,7 +22,7 @@ csv_data = df.to_csv(index=False)
 
 # Email configuration
 sender_email = "maheswari.n1598@gmail.com"
-sender_password = "erfo qydj aran ubet"
+sender_password = ""
 receiver_email = "maheshe2213.cats@gmail.com"
 
 # Create a multipart message and set headers
